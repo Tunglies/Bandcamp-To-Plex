@@ -1,0 +1,52 @@
+name: PyInstaller
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create_release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release BandcampToPlex
+          tag_name: BandcampToPlex
+          body: BandcampToPlex
+          draft: false
+          prerelease: false
+          generate_release_notes: false
+
+  build:
+    needs: create_release
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+        
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+      - run: pip install pyinstaller
+
+      - name: Build
+        run: |
+          pyinstaller -F bandcamp_to_plex.py -n BandcampToPlex-${{ env.VERSION }}-${{ runner.os }}-amd64
+        
+      - name: Upload build artifact - ${{ matrix.os }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: BandcampToPlex-${{ env.VERSION }}-${{ runner.os }}-amd64
+          path: dist
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.create_release.outputs.tag-name }}
+          files: dist/*
