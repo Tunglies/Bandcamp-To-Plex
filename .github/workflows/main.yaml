@@ -10,10 +10,11 @@ jobs:
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
         with:
-          name: Release BandcampToPlex
-          tag_name: BandcampToPlex
-          body: BandcampToPlex
+          name: Release ${{ github.ref }}
+          tag_name: ${{ github.ref }}
+          body: Release New! :P
           draft: false
           prerelease: false
           generate_release_notes: false
