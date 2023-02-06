@@ -29,11 +29,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - run: pyinstaller >> requirements.txt
       - name: Setup Python 3.10
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      - run: pip install pyinstaller
+      - run: pip install -r requirements.txt
 
       - name: Build
         run: |
