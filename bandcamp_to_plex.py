@@ -57,7 +57,6 @@ def run(source: str):
         print(f"{soundtrack} -> {soundtrack_dst_path}")
 
 
-
 if __name__ == "__main__":
     source = sys.argv[1] if len(sys.argv) > 1 else __file__
     run(source)
